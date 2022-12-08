@@ -2,6 +2,7 @@
 using EightPuzzleLogic.Boards;
 using EightPuzzleLogic.Tests.ExtensionsTests;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Xunit;
 
 namespace EightPuzzleLogic.Tests.AlgorithmsTests;
@@ -9,7 +10,7 @@ namespace EightPuzzleLogic.Tests.AlgorithmsTests;
 public class EightPuzzleSolverTests
 {
     private static readonly int[][] LdfsSolvableStartState = 
-        { new[] { 2, 6, 8 }, new[] { 7, 0, 4 }, new[] { 3, 5, 1 } };
+        { new[] { 3, 4, 1 }, new[] { 2, 0, 6 }, new[] { 7, 5, 8 } };
     private static readonly int[][] AstarSolvableStartState = 
         { new[] { 6, 7, 1 }, new[] { 4, 0, 2 }, new[] { 5, 8, 3 } };
     
@@ -19,30 +20,32 @@ public class EightPuzzleSolverTests
         { new []{4, 1, 2}, new []{7, 0, 3}, new []{8, 6, 5} };
     
     [Fact]
-    public void LdfsSolveEightPuzzle_SolutionIsNotFound()
+    public void LdfsSolveEightPuzzle_AvailableMemoryExceeded()
     {
         var serviceProvider = IocContainerExtensionsTests.GetServiceProvider(PuzzleSortAlgorithmType.LDFS);
         var solver = serviceProvider.GetService<IEightPuzzleSolving>();
         var puzzleBoard = serviceProvider.GetService<IPuzzleBoard>();
         puzzleBoard!.PuzzleState = LdfsUnsolvableStartState;
         
-        Assert.Null(solver!.SolveEightPuzzle(puzzleBoard));
+        Assert.Throws<InsufficientMemoryException>(() => solver!.SolveEightPuzzle(puzzleBoard));
     }
     
     [Fact]
-    public void AstarSolveEightPuzzle_SolutionIsNotFound()
+    public void AstarSolveEightPuzzle_AvailableMemoryExceeded()
     {
         var serviceProvider = IocContainerExtensionsTests.GetServiceProvider(PuzzleSortAlgorithmType.Astar);
         var solver = serviceProvider.GetService<IEightPuzzleSolving>();
         var puzzleBoard = serviceProvider.GetService<IAstarPuzzleBoard>();
         puzzleBoard!.PuzzleState = AstarUnsolvableStartState;
         
-        Assert.Null(solver!.SolveEightPuzzle(puzzleBoard));
+        Assert.Throws<InsufficientMemoryException>(() => solver!.SolveEightPuzzle(puzzleBoard));
     }
     
     [Fact]
     public void SolveEightPuzzleWithLDFS_SolvesSuccessfully()
     {
+        GC.Collect();
+
         var serviceProvider = IocContainerExtensionsTests.GetServiceProvider(PuzzleSortAlgorithmType.LDFS);
         var solver = serviceProvider.GetService<IEightPuzzleSolving>();
         var puzzleValidator = serviceProvider.GetService<IEightPuzzleValidator>();
