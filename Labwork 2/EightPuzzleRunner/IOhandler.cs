@@ -4,11 +4,11 @@ using EightPuzzleLogic.Algorithms;
 
 namespace EightPuzzleRunner
 {
-    public class OutputHandler
+    public class IOhandler
     {
         private readonly IEightPuzzleValidator _puzzleValidator;
 
-        public OutputHandler(IEightPuzzleValidator puzzleValidator)
+        public IOhandler(IEightPuzzleValidator puzzleValidator)
         {
             _puzzleValidator = puzzleValidator;
         }
@@ -18,7 +18,8 @@ namespace EightPuzzleRunner
         {
             if (puzzleField is null)
             {
-                throw new ArgumentNullException(nameof(puzzleField), "The puzzle field mustn't be null");
+                throw new ArgumentNullException(nameof(puzzleField), 
+                    "The puzzle field mustn't be null");
             }
 
             const int dashesCountInRow = 9;
@@ -45,7 +46,8 @@ namespace EightPuzzleRunner
         {
             if (resultPuzzleBoard == null)
             {
-                throw new ArgumentNullException(nameof(resultPuzzleBoard), "Puzzle board mustn't be null");
+                throw new ArgumentNullException(nameof(resultPuzzleBoard), 
+                    "Puzzle board mustn't be null");
             }
 
             PrintSortingSolutionRecursively(resultPuzzleBoard);
