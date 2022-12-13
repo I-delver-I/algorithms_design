@@ -13,19 +13,36 @@ public static class Program
     {
         Console.WriteLine("You are going to solve 8-puzzle problem on randomly generated field:");
 
-        const bool debug = false;
         var goalState = new[] { new [] {1, 2, 3}, new [] {4, 5, 6}, new [] {7, 8, 0} };
-        const int puzzleValueToMove = 0;
+
+        var serviceCollection = new ServiceCollection();
+        var puzzleValidator = serviceCollection.ConfigurePuzzleValidator(goalState);
+        var puzzleManager = serviceCollection.ConfigurePuzzleManager(puzzleValidator);
+
+        var generatedPuzzleField = puzzleManager.GenerateStartState();
 
         PuzzleSortAlgorithmType sortingAlgorithmType = default;
-        CatchInitialData(ref sortingAlgorithmType);
+        IOhandler.CatchAlgorithmType(ref sortingAlgorithmType);
 
+        object solverObject;
         IServiceProvider serviceContainer;
 
         try
         {
-            serviceContainer = new ServiceCollection()
-                .ConfigureServices(debug, goalState, puzzleValueToMove, sortingAlgorithmType)
+            switch (sortingAlgorithmType)
+            {
+                case PuzzleSortAlgorithmType.LDFS:
+                    solverObject = new LdfsSolver(puzzleValidator, 27);
+                    break;
+                case PuzzleSortAlgorithmType.Astar:
+                    solverObject = new AstarSolver(puzzleValidator);
+                    break;
+                default:
+                    throw new ArgumentException("Specified wrong algorithm type");
+            }
+
+            serviceContainer = serviceCollection
+                .ConfigureServices(generatedPuzzleField, solverObject)
                 .BuildServiceProvider();
         }
         catch (ArgumentOutOfRangeException ex)
@@ -60,12 +77,11 @@ public static class Program
         Console.WriteLine("Created puzzle field:");
         outputHandler.PrintField(startingBoard!.PuzzleState);
 
-        var solver = serviceContainer.GetService<IEightPuzzleSolving>();
-        
         var timer = new Stopwatch();
         
         timer.Start();
         IPuzzleBoard resultBoard;
+        var solver = solverObject as IEightPuzzleSolving;
 
         try
         {
@@ -114,35 +130,5 @@ public static class Program
                 System.Console.WriteLine(ex.Message);
             }
         }
-    }
-
-    public static void CatchInitialData(ref PuzzleSortAlgorithmType algorithmType)
-    {
-        Console.Write("Enter the algorithm to use:\n"
-            + "ldfs\n"
-            + "a*\n"
-            + ">>> ");
-
-        bool errorOccured = false;
-
-        do
-        {
-            errorOccured = false;
-            var algorithmToUse = Console.ReadLine();
-
-            switch (algorithmToUse.ToLower().Trim())
-            {
-                case "a*":
-                    algorithmType = PuzzleSortAlgorithmType.Astar;
-                    break;
-                case "ldfs":
-                    algorithmType = PuzzleSortAlgorithmType.LDFS;
-                    break;
-                default:
-                    errorOccured = true;
-                    System.Console.WriteLine("You entered wrong algorithm name. Try again");
-                    break;
-            }
-        } while (errorOccured);
     }
 }

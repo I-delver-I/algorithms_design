@@ -68,7 +68,8 @@ public class PuzzleBoardTests
     public void TryGetChild_ReturnsChildCorrectly(int puzzleValueToMove, MovingDirection movingDirection,
         int[][] expected)
     {
-        var serviceProvider = IocContainerExtensionsTests.GetServiceProvider(puzzleValueToMove: puzzleValueToMove);
+        var serviceProvider = IocContainerExtensionsTests
+            .GetServiceProvider(puzzleValueToMove: puzzleValueToMove);
         var parentBoard = serviceProvider.GetService<IPuzzleBoard>();
         parentBoard!.PuzzleState = TestPuzzleState;
             

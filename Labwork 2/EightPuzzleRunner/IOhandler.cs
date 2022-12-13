@@ -13,6 +13,36 @@ namespace EightPuzzleRunner
             _puzzleValidator = puzzleValidator;
         }
 
+        public static void CatchAlgorithmType(ref PuzzleSortAlgorithmType algorithmType)
+        {
+            Console.Write("Enter the algorithm to use:\n"
+                + "ldfs\n"
+                + "a*\n"
+                + ">>> ");
+
+            bool errorOccured = false;
+
+            do
+            {
+                errorOccured = false;
+                var algorithmToUse = Console.ReadLine();
+
+                switch (algorithmToUse.ToLower().Trim())
+                {
+                    case "a*":
+                        algorithmType = PuzzleSortAlgorithmType.Astar;
+                        break;
+                    case "ldfs":
+                        algorithmType = PuzzleSortAlgorithmType.LDFS;
+                        break;
+                    default:
+                        errorOccured = true;
+                        System.Console.WriteLine("You entered wrong algorithm name. Try again");
+                        break;
+                }
+            } while (errorOccured);
+        }
+
         /// <exception cref="ArgumentNullException"></exception>
         public void PrintField(int[][] puzzleField)
         {

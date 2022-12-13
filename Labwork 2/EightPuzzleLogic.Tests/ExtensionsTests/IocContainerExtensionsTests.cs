@@ -8,15 +8,41 @@ namespace EightPuzzleLogic.Tests.ExtensionsTests
 {
     public class IocContainerExtensionsTests
     {
-        private static readonly int[][] GoalState = { new [] {1, 2, 3}, new [] {4, 5, 6}, new [] {7, 8, 0} };
+        private static readonly int[][] GoalState = 
+            { new [] {1, 2, 3}, new [] {4, 5, 6}, new [] {7, 8, 0} };
+
+        public static object GetSolverByName
+            (PuzzleSortAlgorithmType algorithmType, IEightPuzzleValidator puzzleValidator)
+        {
+            switch (algorithmType)
+            {
+                case PuzzleSortAlgorithmType.Astar:
+                    return new AstarSolver(puzzleValidator);
+                case PuzzleSortAlgorithmType.LDFS:
+                    int depthLimit = 27;
+
+                    return new LdfsSolver(puzzleValidator, depthLimit);
+                default:
+                    return null;
+            }
+        }
 
         public static ServiceProvider GetServiceProvider
-        (PuzzleSortAlgorithmType algorithmType = PuzzleSortAlgorithmType.Astar, 
-            int puzzleValueToMove = 0, bool debug = false)
+            (PuzzleSortAlgorithmType algorithmType = PuzzleSortAlgorithmType.Astar, 
+                int puzzleValueToMove = 0)
         {
-            var collection = new ServiceCollection();
-            return collection
-                .ConfigureServices(debug, GoalState, puzzleValueToMove, algorithmType)
+            var serviceCollection = new ServiceCollection();
+
+            var puzzleValidator = serviceCollection
+                .ConfigurePuzzleValidator(GoalState, puzzleValueToMove);
+            var puzzleManager = serviceCollection
+                .ConfigurePuzzleManager(puzzleValidator);
+
+            var startState = puzzleManager.GenerateStartState();
+            var solver = GetSolverByName(algorithmType, puzzleValidator);
+
+            return serviceCollection
+                .ConfigureServices(startState, solver)
                 .BuildServiceProvider();
         }
 

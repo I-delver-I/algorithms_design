@@ -27,7 +27,7 @@ namespace EightPuzzleLogic.Algorithms
         public int OverallStatesCount { get; set; }
         public int StatesCountInMemory { get; set; }
 
-        public LdfsSolver(IEightPuzzleValidator puzzleValidator, int depthLimit)
+        public LdfsSolver(IEightPuzzleValidator puzzleValidator, int depthLimit = 27)
         {
             _puzzleValidator = puzzleValidator;
             DepthLimit = depthLimit;
