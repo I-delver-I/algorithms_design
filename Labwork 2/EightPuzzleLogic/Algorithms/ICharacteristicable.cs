@@ -2,9 +2,9 @@ namespace EightPuzzleLogic.Algorithms
 {
     public interface ICharacteristicable
     {
-        int IterationsCount { get; set; }
-        int BlindCornersCount { get; set; }
-        int OverallStatesCount { get; set; }
-        int StatesCountInMemory { get; set; }
+        public int IterationsCount { get; set; }
+        public int BlindCornersCount { get; set; }
+        public int OverallStatesCount { get; set; }
+        public int StatesCountInMemory { get; set; }
     }
 }

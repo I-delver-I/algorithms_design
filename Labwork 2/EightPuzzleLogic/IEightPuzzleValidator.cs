@@ -4,12 +4,12 @@ namespace EightPuzzleLogic;
 
 public interface IEightPuzzleValidator
 {
-    int PuzzlesCount { get; }
-    int[][] GoalState { get; }
-    int PuzzlesCountInRow { get; }
-    int PuzzleValueToMove { get; }
+    public int PuzzlesCount { get; }
+    public int[][] GoalState { get; }
+    public int PuzzlesCountInRow { get; }
+    public int PuzzleValueToMove { get; }
     
-    bool ValidatePuzzleMoving(IPuzzleBoard puzzleBoard, MovingDirection movingDirection);
-    bool ValidateGoalStateReaching(int[][] fieldState);
-    bool ValidateFieldCorrectness(IEnumerable<int[]> fieldToValidate);
+    public bool ValidatePuzzleMoving(IPuzzleBoard puzzleBoard, MovingDirection movingDirection);
+    public bool ValidateGoalStateReaching(int[][] fieldState);
+    public bool ValidateFieldCorrectness(IEnumerable<int[]> fieldToValidate);
 }

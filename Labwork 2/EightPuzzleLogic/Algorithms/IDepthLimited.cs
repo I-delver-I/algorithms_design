@@ -2,5 +2,5 @@
 
 public interface IDepthLimited
 {
-    int DepthLimit { get; }
+    public int DepthLimit { get; }
 }

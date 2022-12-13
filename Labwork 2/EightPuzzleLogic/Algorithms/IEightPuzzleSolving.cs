@@ -4,6 +4,6 @@ namespace EightPuzzleLogic.Algorithms
 {
     public interface IEightPuzzleSolving
     {
-        IPuzzleBoard SolveEightPuzzle(IPuzzleBoard puzzleBoard);
+        public IPuzzleBoard SolveEightPuzzle(IPuzzleBoard puzzleBoard);
     }
 }
