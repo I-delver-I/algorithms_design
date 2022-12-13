@@ -11,6 +11,6 @@ namespace EightPuzzleLogic.Boards
         IPuzzleBoard Clone();
         void GenerateChildren();
         Tuple<int, int> GetCoordinatesOfPuzzle(int puzzleValue);
-        IPuzzleBoard TryGetChild(MovingDirection movingDirection);
+        // IPuzzleBoard TryGetChild(MovingDirection movingDirection);
     }
 }

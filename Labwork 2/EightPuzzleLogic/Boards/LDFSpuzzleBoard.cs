@@ -64,7 +64,7 @@ namespace EightPuzzleLogic.Boards
             return new Tuple<int, int>(-1, -1);
         }
 
-        public IPuzzleBoard TryGetChild(MovingDirection movingDirection)
+        private IPuzzleBoard TryGetChild(MovingDirection movingDirection)
         {
             var child = PuzzleManager.MovePuzzle(this, movingDirection);
 

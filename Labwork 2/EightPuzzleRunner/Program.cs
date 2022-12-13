@@ -32,7 +32,9 @@ public static class Program
             switch (sortingAlgorithmType)
             {
                 case PuzzleSortAlgorithmType.LDFS:
-                    solverObject = new LdfsSolver(puzzleValidator, 27);
+                    int depthLimit = 27;
+
+                    solverObject = new LdfsSolver(puzzleValidator, depthLimit);
                     break;
                 case PuzzleSortAlgorithmType.Astar:
                     solverObject = new AstarSolver(puzzleValidator);

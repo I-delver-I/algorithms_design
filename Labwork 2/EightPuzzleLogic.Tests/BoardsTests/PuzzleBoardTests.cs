@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EightPuzzleLogic.Boards;
 using EightPuzzleLogic.Tests.ExtensionsTests;
@@ -30,52 +31,22 @@ public class PuzzleBoardTests
         return result;
     }
         
-    public static IEnumerable<object[]> GeneratePuzzleValueWithDirectionAndExpectedBoard()
-    {
-        var result = new List<object[]>()
-        {
-            new object[]
-            {
-                1,
-                MovingDirection.Down,
-                new [] { new []{ 4, 2, 3 }, new []{ 1, 7, 6 }, new []{ 5, 0, 8 } }
-            },
-            new object[]
-            {
-                0,
-                MovingDirection.Up,
-                new []{ new []{ 1, 2, 3 }, new []{ 4, 0, 6 }, new []{ 5, 7, 8 } }
-            }
-        };
-
-        return result;
-    }
-
     [Fact]
-    public void TryGetChild_ReturnsNullIfChildIsNotFound()
+    public void GenerateChildren_GeneratesChildrenCorrectly()
     {
         var serviceProvider = IocContainerExtensionsTests.GetServiceProvider();
         var parentBoard = serviceProvider.GetService<IPuzzleBoard>();
         parentBoard!.PuzzleState = TestPuzzleState;
+        var expected = new List<int[][]>() {
+            new[] { new[] {1, 2, 3}, new[] {4, 7, 6}, new[] {5, 8, 0} },
+            new[] { new[] {1, 2, 3}, new[] {4, 7, 6}, new[] {0, 5, 8} },
+            new[] { new[] {1, 2, 3}, new[] {4, 0, 6}, new[] {5, 7, 8} }
+        };
         
-        var actual = parentBoard.TryGetChild(MovingDirection.Down);
+        parentBoard.GenerateChildren();
+        var actual = parentBoard.Children.Select(board => board.PuzzleState);
         
-        Assert.Null(actual);
-    }
-
-    [Theory]
-    [MemberData(nameof(GeneratePuzzleValueWithDirectionAndExpectedBoard))]
-    public void TryGetChild_ReturnsChildCorrectly(int puzzleValueToMove, MovingDirection movingDirection,
-        int[][] expected)
-    {
-        var serviceProvider = IocContainerExtensionsTests
-            .GetServiceProvider(puzzleValueToMove: puzzleValueToMove);
-        var parentBoard = serviceProvider.GetService<IPuzzleBoard>();
-        parentBoard!.PuzzleState = TestPuzzleState;
-            
-        var actual = parentBoard.TryGetChild(movingDirection);
-            
-        Assert.Equal(expected, actual.PuzzleState);
+        Assert.Equal(expected, actual);
     }
 
     [Theory]
