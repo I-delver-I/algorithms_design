@@ -10,7 +10,7 @@ namespace DBMSlogic
         private readonly int _maxKeysInNode;
         private readonly int _minKeysInNode;
 
-        internal BTreeNode<T> Root;
+        internal BTreeNode<T> Root { get; set; }
 
         public BTree(int maxKeysInNode)
         {
