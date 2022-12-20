@@ -1,48 +1,52 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DBMSlogic;
 
-internal class BTreeEnumerator<T> : IEnumerator<T> where T : IComparable
+public class BTreeEnumerator<T> : IEnumerator<T> where T : IComparable
 {
-    private readonly BTreeNode<T> root;
+    private readonly BTreeNode<T> _root;
 
-    private BTreeNode<T> current;
-    private int index;
-    private Stack<BTreeNode<T>> progress;
+    private BTreeNode<T> _current;
+    private int _index;
+    private Stack<BTreeNode<T>> _progress;
 
-    internal BTreeEnumerator(BTreeNode<T> root)
+    public BTreeEnumerator(BTreeNode<T> root)
     {
-        this.root = root;
+        _root = root;
     }
 
     public bool MoveNext()
     {
-        if (root == null) return false;
-
-        if (progress == null)
+        if (_root == null) 
         {
-            current = root;
-            progress = new Stack<BTreeNode<T>>(root.Children.Take(root.KeyCount + 1).Where(x => x != null));
-            return current.KeyCount > 0;
+            return false;
         }
 
-        if (current != null && index + 1 < current.KeyCount)
+        if (_progress == null)
         {
-            index++;
+            _current = _root;
+            _progress = new Stack<BTreeNode<T>>(_root.Children.Take(_root.KeyCount + 1).Where(x => x != null));
+
+            return _current.KeyCount > 0;
+        }
+
+        if ((_current != null) && (_index + 1 < _current.KeyCount))
+        {
+            _index++;
+
             return true;
         }
 
-        if (progress.Count > 0)
+        if (_progress.Count > 0)
         {
-            index = 0;
+            _index = 0;
 
-            current = progress.Pop();
+            _current = _progress.Pop();
 
-            foreach (var child in current.Children.Take(current.KeyCount + 1).Where(x => x != null))
-                progress.Push(child);
+            foreach (var child in _current.Children.Take(_current.KeyCount + 1).Where(x => x != null))
+            {
+                _progress.Push(child);
+            }
 
             return true;
         }
@@ -52,17 +56,14 @@ internal class BTreeEnumerator<T> : IEnumerator<T> where T : IComparable
 
     public void Reset()
     {
-        progress = null;
-        current = null;
-        index = 0;
+        _progress = null;
+        _current = null;
+        _index = 0;
     }
 
     object IEnumerator.Current => Current;
 
-    public T Current => current.Keys[index];
+    public T Current => _current.Keys[_index];
 
-    public void Dispose()
-    {
-        progress = null;
-    }
+    public void Dispose() => _progress = null;
 }

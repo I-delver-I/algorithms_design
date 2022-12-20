@@ -1,59 +1,32 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DBMSlogic
 {
     public class BTree<T> : IEnumerable<T> where T : IComparable
     {
-        private readonly int _maxKeysInNode;
-        private readonly int _minKeysInNode;
+        private int _maxKeysCountInNode
+        {
+            get => _maxKeysCountInNode;
+            set
+            {
+                if (value < 3)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+            }
+        }
+
+        private readonly int _minKeysCountInNode;
 
         internal BTreeNode<T> Root { get; set; }
 
-        public BTree(int maxKeysInNode)
+        public BTree(int maxKeysCountInNode)
         {
-            if (maxKeysInNode < 3) {
-                throw new ArgumentOutOfRangeException("Max keys per node should be atleast 3.");
-            }
-
-            _maxKeysInNode = maxKeysInNode;
-            _minKeysInNode = maxKeysInNode / 2;
+            _maxKeysCountInNode = maxKeysCountInNode;
+            _minKeysCountInNode = maxKeysCountInNode / 2;
         }
 
         public int Count { get; private set; }
-
-        /// <summary>
-        ///     Time complexity: O(log(n)).
-        /// </summary>
-        public T Max
-        {
-            get
-            {
-                if (Root == null) return default;
-
-                var maxNode = FindMaxNode(Root);
-                return maxNode.Keys[maxNode.KeyCount - 1];
-            }
-        }
-
-        /// <summary>
-        ///     Time complexity: O(log(n)).
-        /// </summary>
-        public T Min
-        {
-            get
-            {
-                if (Root == null) {
-                    return default;
-                }
-
-                var minNode = FindMinNode(Root);
-
-                return minNode.Keys[0];
-            }
-        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -68,7 +41,7 @@ namespace DBMSlogic
         /// <summary>
         ///     Time complexity: O(log(n)).
         /// </summary>
-        public bool HasItem(T value)
+        public bool Contains(T value)
         {
             return Find(Root, value) != null;
         }
@@ -113,9 +86,10 @@ namespace DBMSlogic
         {
             if (Root == null)
             {
-                Root = new BTreeNode<T>(_maxKeysInNode, null) { Keys = { [0] = newValue } };
+                Root = new BTreeNode<T>(_maxKeysCountInNode, null) { Keys = { [0] = newValue } };
                 Root.KeyCount++;
                 Count++;
+
                 return;
             }
 
@@ -157,13 +131,13 @@ namespace DBMSlogic
             //add new item to current node
             if (node == null)
             {
-                node = new BTreeNode<T>(_maxKeysInNode, null);
+                node = new BTreeNode<T>(_maxKeysCountInNode, null);
                 Root = node;
             }
 
             //newValue have room to fit in this node
             //so just insert in right spot in asc order of keys
-            if (node.KeyCount != _maxKeysInNode)
+            if (node.KeyCount != _maxKeysCountInNode)
             {
                 InsertToNotFullNode(ref node, newValue, newValueLeft, newValueRight);
                 return;
@@ -173,8 +147,8 @@ namespace DBMSlogic
             //and  then insert new median to parent.
 
             //divide the current node values + new Node as left and right sub nodes
-            var left = new BTreeNode<T>(_maxKeysInNode, null);
-            var right = new BTreeNode<T>(_maxKeysInNode, null);
+            var left = new BTreeNode<T>(_maxKeysCountInNode, null);
+            var right = new BTreeNode<T>(_maxKeysCountInNode, null);
 
             //median of current Node
             var currentMedianIndex = node.GetMedianIndex();
@@ -379,12 +353,12 @@ namespace DBMSlogic
         /// </summary>
         private void Balance(BTreeNode<T> node)
         {
-            if (node == Root || node.KeyCount >= _minKeysInNode) return;
+            if (node == Root || node.KeyCount >= _minKeysCountInNode) return;
 
             var rightSibling = GetRightSibling(node);
 
             if (rightSibling != null
-                && rightSibling.KeyCount > _minKeysInNode)
+                && rightSibling.KeyCount > _minKeysCountInNode)
             {
                 LeftRotate(node, rightSibling);
                 return;
@@ -393,27 +367,27 @@ namespace DBMSlogic
             var leftSibling = GetLeftSibling(node);
 
             if (leftSibling != null
-                && leftSibling.KeyCount > _minKeysInNode)
+                && leftSibling.KeyCount > _minKeysCountInNode)
             {
                 RightRotate(leftSibling, node);
                 return;
             }
 
             if (rightSibling != null)
-                Sandwich(node, rightSibling);
+                Union(node, rightSibling);
             else
-                Sandwich(leftSibling, node);
+                Union(leftSibling, node);
         }
 
         /// <summary>
         ///     merge two adjacent siblings to one node
         /// </summary>
-        private void Sandwich(BTreeNode<T> leftSibling, BTreeNode<T> rightSibling)
+        private void Union(BTreeNode<T> leftSibling, BTreeNode<T> rightSibling)
         {
             var separatorIndex = GetNextSeparatorIndex(leftSibling);
             var parent = leftSibling.Parent;
 
-            var newNode = new BTreeNode<T>(_maxKeysInNode, leftSibling.Parent);
+            var newNode = new BTreeNode<T>(_maxKeysCountInNode, leftSibling.Parent);
             var newIndex = 0;
 
             for (var i = 0; i < leftSibling.KeyCount; i++)
@@ -468,7 +442,7 @@ namespace DBMSlogic
                 return;
             }
 
-            if (parent.KeyCount < _minKeysInNode) Balance(parent);
+            if (parent.KeyCount < _minKeysCountInNode) Balance(parent);
         }
 
         /// <summary>
