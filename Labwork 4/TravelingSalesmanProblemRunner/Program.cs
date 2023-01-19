@@ -5,6 +5,9 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        GraphOfPlacesToAttend graph = new GraphOfPlacesToAttend(10);
+        var graph = new GraphOfSites(200);
+        var antSpawner = new AntSpawner(graph);
+
+        antSpawner.SpawnAnts();
     }
 }

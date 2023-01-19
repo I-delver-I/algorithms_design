@@ -1,16 +1,16 @@
 namespace TravelingSalesmanProblemLogic
 {
-    public class GraphEdge
+    public class AntGraphEdge
     {
-        public PlaceToAttendVertex FirstPlace { get; set; }
+        public GraphSiteVertex FirstPlace { get; set; }
 
-        public PlaceToAttendVertex SecondPlace { get; set; }
+        public GraphSiteVertex SecondPlace { get; set; }
 
         public int Length { get; set; } = 1;
 
         public double PheromonConcentration { get; set; }
 
-        public GraphEdge(PlaceToAttendVertex firstPlace, PlaceToAttendVertex secondPlace)
+        public AntGraphEdge(GraphSiteVertex firstPlace, GraphSiteVertex secondPlace)
         {
             FirstPlace = firstPlace;
             SecondPlace = secondPlace;
