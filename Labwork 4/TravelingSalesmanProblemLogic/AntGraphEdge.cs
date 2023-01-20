@@ -2,9 +2,9 @@ namespace TravelingSalesmanProblemLogic
 {
     public class AntGraphEdge
     {
-        public GraphSiteVertex FirstPlace { get; set; }
+        public GraphSiteVertex FirstVertex { get; set; }
 
-        public GraphSiteVertex SecondPlace { get; set; }
+        public GraphSiteVertex SecondVertex { get; set; }
 
         public int Length { get; set; } = 1;
 
@@ -12,8 +12,8 @@ namespace TravelingSalesmanProblemLogic
 
         public AntGraphEdge(GraphSiteVertex firstPlace, GraphSiteVertex secondPlace)
         {
-            FirstPlace = firstPlace;
-            SecondPlace = secondPlace;
+            FirstVertex = firstPlace;
+            SecondVertex = secondPlace;
 
             Random random = new Random();
             PheromonConcentration = random.NextDouble();
@@ -21,6 +21,11 @@ namespace TravelingSalesmanProblemLogic
             int smallestLength = 1;
             int longestLength = 40;
             Length = random.Next(smallestLength, longestLength + 1);
+        }
+
+        public override string ToString()
+        {
+            return $"{FirstVertex} <--{Length}--> {SecondVertex}";
         }
     }
 }

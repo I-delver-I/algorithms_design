@@ -20,5 +20,10 @@ namespace TravelingSalesmanProblemLogic
         {
             return _ants.Count;
         }
+
+        public override string ToString()
+        {
+            return Number.ToString();
+        }
     }
 }

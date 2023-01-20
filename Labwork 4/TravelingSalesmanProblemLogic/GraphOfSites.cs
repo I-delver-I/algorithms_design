@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 
 namespace TravelingSalesmanProblemLogic
 {
@@ -26,9 +27,9 @@ namespace TravelingSalesmanProblemLogic
             }
             else
             {
-                for (var i = _vertices.Count; i > 1; i--)
+                for (var i = 1; i < _vertices.Count; i++)
                 {
-                    for (var j = i - 1; j > 0; j--)
+                    for (var j = i + 1; j < _vertices.Count + 1; j++)
                     {
                         TryAddEdge(i, j);
                     }
@@ -43,14 +44,47 @@ namespace TravelingSalesmanProblemLogic
 
         public void RemoveVertex(int vertexNumber)
         {
-            _edges.RemoveAll(e => (e.FirstPlace.Number == vertexNumber)
-                || (e.SecondPlace.Number == vertexNumber));
+            _edges.RemoveAll(e => (e.FirstVertex.Number == vertexNumber)
+                || (e.SecondVertex.Number == vertexNumber));
             _vertices.Remove(_vertices.Find(v => v.Number == vertexNumber));
         }
 
         public bool VertexExists(int vertexNumber)
         {
             return _vertices.Exists(v => v.Number == vertexNumber);
+        }
+
+        public List<AntGraphEdge> GetEdgesWithSpecifiedVertex(int vertexNumber)
+        {
+            return _edges.FindAll(e => (e.FirstVertex.Number == vertexNumber) 
+                || (e.SecondVertex.Number == vertexNumber)).ToList();
+        }
+
+        public List<AntGraphEdge> GetEdgesWithSpecifiedVertexExceptVisitedOnes(int vertexNumber, 
+            int[] visitedVerticesNumbers)
+        {
+            return GetEdgesWithSpecifiedVertex(vertexNumber)
+                .Except(GetEdgesWithSpecifiedVertex(vertexNumber)
+                    .Where(e => ((e.FirstVertex.Number == vertexNumber) 
+                        && (visitedVerticesNumbers.Contains(e.SecondVertex.Number)))
+                    || ((e.SecondVertex.Number == vertexNumber) 
+                        && (visitedVerticesNumbers.Contains(e.FirstVertex.Number))))).ToList();
+        }
+
+        public int GetVerticesCount()
+        {
+            return _vertices.Count;
+        }
+
+        public GraphSiteVertex FindVertexByNumber(int vertexNumber)
+        {
+            return _vertices.Find(v => v.Number == vertexNumber);
+        }
+
+        public bool HasVertexEdge(int vertexNumber)
+        {
+            return _edges.Exists(e => 
+                (e.FirstVertex.Number == vertexNumber) || (e.SecondVertex.Number == vertexNumber));
         }
 
 
@@ -70,18 +104,47 @@ namespace TravelingSalesmanProblemLogic
 
         public bool EdgeExists(int firstVertexNumber, int secondVertexNumber)
         {
-            return _edges.Exists(e => (e.FirstPlace.Number == firstVertexNumber) 
-                && (e.SecondPlace.Number == secondVertexNumber));
+            return _edges.Exists(e => (e.FirstVertex.Number == firstVertexNumber) 
+                && (e.SecondVertex.Number == secondVertexNumber));
         }
 
-        public int GetVerticesCount()
+        public AntGraphEdge GetEdgeByVerticesNumbers(int firstVertexNumber, int secondVertexNumber)
         {
-            return _vertices.Count;
+            return _edges.Find(e => 
+                ((e.FirstVertex.Number == firstVertexNumber) 
+                    && (e.SecondVertex.Number == secondVertexNumber)) 
+                || ((e.FirstVertex.Number == secondVertexNumber) 
+                    && (e.SecondVertex.Number == firstVertexNumber)));
         }
 
-        public GraphSiteVertex FindVertexByNumber(int vertexNumber)
+        public override string ToString()
         {
-            return _vertices.Find(v => v.Number == vertexNumber);
+            var result = new StringBuilder().Append("Edges:\n");
+
+            foreach (AntGraphEdge edge in _edges)
+            {
+                result.Append($" {edge} |");
+            }
+
+            var verticesWithoutEdges = new List<GraphSiteVertex>();
+            var existVerticesWithoutEdge = false;
+        
+            foreach (GraphSiteVertex vertex in _vertices)
+            {
+                if (!HasVertexEdge(vertex.Number))
+                {
+                    existVerticesWithoutEdge = true;
+                    verticesWithoutEdges.Add(vertex);
+                }
+            }
+
+            if (existVerticesWithoutEdge)
+            {
+                result.Append("\n\nVertices without edge:\n");
+                verticesWithoutEdges.ForEach(v => result.Append($" {v} |"));
+            }
+
+            return result.ToString();
         }
     }
 }
