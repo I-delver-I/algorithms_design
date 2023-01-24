@@ -1,52 +1,84 @@
-using System.Linq;
+using System.Collections;
 using System.Text;
 
 namespace TravelingSalesmanProblemLogic
 {
-    public class GraphOfSites
+    public class GraphOfSites : IEnumerable<AntGraphEdge>
     {
-        private List<GraphSiteVertex> _vertices = new List<GraphSiteVertex>();
+        private List<GraphVertex> _vertices = new List<GraphVertex>();
         private List<AntGraphEdge> _edges = new List<AntGraphEdge>();
+
+        public double PheromonEvaporationRate { get; } = 0.7;
 
         public int NextVertexNumber { get; private set; } = 1;
 
-        public GraphOfSites(int initialVerticesCount, 
-            List<(int, int)> initialEdgesNumberPairs = null)
+        public GraphOfSites(int initialVerticesCount)
         {
-            for (var i = 0; i < initialVerticesCount; i++)
+            AddVertices(initialVerticesCount);
+            CreateEdgesBetweenAllVertices();     
+        }
+
+        public void UpdatePheromonLevel(int minimalSolutionPrice, 
+            AntGraphEdge edgeToUpdatePheromoneLevelOn)
+        {
+            var adjustedPheromonSum = 
+                GetAdjustedPheromonSum(minimalSolutionPrice, edgeToUpdatePheromoneLevelOn);
+
+            for (int i = 0; i < edgeToUpdatePheromoneLevelOn.GetPassedAntsCount(); i++)
+            {
+                edgeToUpdatePheromoneLevelOn.PheromonLevel = (1 - PheromonEvaporationRate) 
+                    * edgeToUpdatePheromoneLevelOn.PheromonLevel + adjustedPheromonSum;
+            }
+        }
+
+        private int GetAdjustedPheromonSum(int minimalSolutionPrice, AntGraphEdge edge)
+        {
+            var result = 0;
+
+            foreach (Ant ant in edge)
+            {
+                result += minimalSolutionPrice
+                    / GetEdgesWhichConnectVertices(ant.GetVerticesNumbers().ToArray())
+                    .Sum(e => e.Length);
+            }
+
+            return result;
+        }
+
+        public void CreateEdgesBetweenAllVertices()
+        {
+            for (var i = 1; i < _vertices.Count; i++)
+            {
+                for (var j = i + 1; j < _vertices.Count + 1; j++)
+                {
+                    TryAddEdge(i, j);
+                }
+            }
+        }
+
+        public List<AntGraphEdge> GetEdgesWhichConnectVertices(int[] verticesNumbers)
+        {
+            var result = new List<AntGraphEdge>();
+
+            for (var i = 0; i < verticesNumbers.Length - 1; i++)
+            {
+                result.Add(GetEdgeByEndsNumbers(verticesNumbers[i], verticesNumbers[i + 1]));
+            }
+
+            return result;
+        }
+
+        public void AddVertices(int verticesCount)
+        {
+            for (var i = 0; i < verticesCount; i++)
             {
                 AddVertex();
             }
-
-            if (initialEdgesNumberPairs is not null)
-            {
-                foreach ((int, int) edgeNumberPair in initialEdgesNumberPairs)
-                {
-                    TryAddEdge(edgeNumberPair.Item1, edgeNumberPair.Item2);
-                }
-            }
-            else
-            {
-                for (var i = 1; i < _vertices.Count; i++)
-                {
-                    for (var j = i + 1; j < _vertices.Count + 1; j++)
-                    {
-                        TryAddEdge(i, j);
-                    }
-                }
-            }            
         }
 
         public void AddVertex()
         {
-            _vertices.Add(new GraphSiteVertex(NextVertexNumber++));
-        }
-
-        public void RemoveVertex(int vertexNumber)
-        {
-            _edges.RemoveAll(e => (e.FirstVertex.Number == vertexNumber)
-                || (e.SecondVertex.Number == vertexNumber));
-            _vertices.Remove(_vertices.Find(v => v.Number == vertexNumber));
+            _vertices.Add(new GraphVertex(NextVertexNumber++));
         }
 
         public bool VertexExists(int vertexNumber)
@@ -60,15 +92,15 @@ namespace TravelingSalesmanProblemLogic
                 || (e.SecondVertex.Number == vertexNumber)).ToList();
         }
 
-        public List<AntGraphEdge> GetEdgesWithSpecifiedVertexExceptVisitedOnes(int vertexNumber, 
-            int[] visitedVerticesNumbers)
+        public List<AntGraphEdge> GetEdgesWithSpecifiedVertexExcept(int vertexNumber, 
+            int[] exceptionalVerticesNumbers)
         {
-            return GetEdgesWithSpecifiedVertex(vertexNumber)
-                .Except(GetEdgesWithSpecifiedVertex(vertexNumber)
+            return GetEdgesWithSpecifiedVertex(vertexNumber).Except
+                    (GetEdgesWithSpecifiedVertex(vertexNumber)
                     .Where(e => ((e.FirstVertex.Number == vertexNumber) 
-                        && (visitedVerticesNumbers.Contains(e.SecondVertex.Number)))
-                    || ((e.SecondVertex.Number == vertexNumber) 
-                        && (visitedVerticesNumbers.Contains(e.FirstVertex.Number))))).ToList();
+                        && (exceptionalVerticesNumbers.Contains(e.SecondVertex.Number)))
+                        || ((e.SecondVertex.Number == vertexNumber) 
+                        && (exceptionalVerticesNumbers.Contains(e.FirstVertex.Number))))).ToList();
         }
 
         public int GetVerticesCount()
@@ -76,17 +108,16 @@ namespace TravelingSalesmanProblemLogic
             return _vertices.Count;
         }
 
-        public GraphSiteVertex FindVertexByNumber(int vertexNumber)
+        public GraphVertex FindVertexByNumber(int vertexNumber)
         {
             return _vertices.Find(v => v.Number == vertexNumber);
         }
 
-        public bool HasVertexEdge(int vertexNumber)
+        public bool ExistsEdgeWithVertex(int vertexNumber)
         {
             return _edges.Exists(e => 
                 (e.FirstVertex.Number == vertexNumber) || (e.SecondVertex.Number == vertexNumber));
         }
-
 
         public void TryAddEdge(int firstVertexNumber, int secondVertexNumber)
         {
@@ -108,7 +139,7 @@ namespace TravelingSalesmanProblemLogic
                 && (e.SecondVertex.Number == secondVertexNumber));
         }
 
-        public AntGraphEdge GetEdgeByVerticesNumbers(int firstVertexNumber, int secondVertexNumber)
+        public AntGraphEdge GetEdgeByEndsNumbers(int firstVertexNumber, int secondVertexNumber)
         {
             return _edges.Find(e => 
                 ((e.FirstVertex.Number == firstVertexNumber) 
@@ -119,32 +150,27 @@ namespace TravelingSalesmanProblemLogic
 
         public override string ToString()
         {
-            var result = new StringBuilder().Append("Edges:\n");
+            var result = new StringBuilder();
 
             foreach (AntGraphEdge edge in _edges)
             {
                 result.Append($" {edge} |");
             }
 
-            var verticesWithoutEdges = new List<GraphSiteVertex>();
-            var existVerticesWithoutEdge = false;
-        
-            foreach (GraphSiteVertex vertex in _vertices)
-            {
-                if (!HasVertexEdge(vertex.Number))
-                {
-                    existVerticesWithoutEdge = true;
-                    verticesWithoutEdges.Add(vertex);
-                }
-            }
-
-            if (existVerticesWithoutEdge)
-            {
-                result.Append("\n\nVertices without edge:\n");
-                verticesWithoutEdges.ForEach(v => result.Append($" {v} |"));
-            }
-
             return result.ToString();
+        }
+
+        public IEnumerator<AntGraphEdge> GetEnumerator()
+        {
+            foreach (AntGraphEdge edge in _edges)
+            {
+                yield return edge;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
