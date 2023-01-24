@@ -8,7 +8,7 @@ namespace TravelingSalesmanProblemLogic
 
         public GraphVertex SecondVertex { get; set; }
 
-        public int Length { get; set; } = 1;
+        public int Length { get; set; }
 
         public double PheromonLevel { get; set; }
 

@@ -82,7 +82,7 @@ namespace TravelingSalesmanProblemLogic
 
         public AntGraphEdge GreedySelectOptimalEdge(int[] visitedVerticesNumbers)
         {
-            var lastVisitedVertexNumber = visitedVerticesNumbers[^1];
+            var lastVisitedVertexNumber = visitedVerticesNumbers.Last();
             var vertexEdges = _graph
                 .GetEdgesWithSpecifiedVertexExcept(lastVisitedVertexNumber, 
                     visitedVerticesNumbers);
