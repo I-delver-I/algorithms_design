@@ -18,6 +18,7 @@ public class Program
         var solver = new AntProblemSolver(graph, edgeSelector, antSpawner, antMover);
 
         // System.Console.WriteLine(graph);
+        var iterationsCount = DataCapturer.CaptureIterationsCount();
         System.Console.WriteLine($"Minimal solution price - {solver.MinimalSolutionPrice}");
 
         try
@@ -33,7 +34,7 @@ public class Program
         var timer = new Stopwatch();
         timer.Start();
         System.Console.WriteLine("Please, wait. Solving traveling salesman problem...");
-        var shortestGraphBypass = solver.Solve();
+        var shortestGraphBypass = solver.Solve(iterationsCount);
         timer.Stop();
         System.Console.WriteLine($"Solving took {timer.Elapsed} time");
         System.Console.WriteLine($"The shortest path length: {shortestGraphBypass.Sum(e => e.Length)}");

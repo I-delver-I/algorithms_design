@@ -10,7 +10,7 @@ namespace TravelingSalesmanProblemRunner
             do
             {
                 verticesAreCaptured = true;
-                System.Console.Write("Enter the initial count of vertices or press 'Enter' to go with default (200): ");
+                System.Console.Write("Enter the initial count of vertices (default 200): ");
 
                 try
                 {
@@ -18,7 +18,8 @@ namespace TravelingSalesmanProblemRunner
 
                     if (initialVerticesCount < antsCount)
                     {
-                        throw new ArgumentOutOfRangeException("The initial vertices count can't be less than ants count");
+                        throw new ArgumentOutOfRangeException
+                            (nameof(initialVerticesCount), "The initial vertices count can't be less than ants count");
                     }
                 }
                 catch (FormatException)
@@ -44,7 +45,7 @@ namespace TravelingSalesmanProblemRunner
             do
             {
                 iterationsAreCaptured = true;
-                System.Console.Write("Enter the count of iterations or press 'Enter' to go with default (1000): ");
+                System.Console.Write("Enter the count of iterations (default 1000): ");
 
                 try
                 {
@@ -52,7 +53,8 @@ namespace TravelingSalesmanProblemRunner
 
                     if (iterationsCount < 20)
                     {
-                        throw new ArgumentOutOfRangeException("The iterations' count can't be less than 20");
+                        throw new ArgumentOutOfRangeException
+                            (nameof(iterationsCount), "The iterations' count can't be less than 20");
                     }
                 }
                 catch (FormatException)
