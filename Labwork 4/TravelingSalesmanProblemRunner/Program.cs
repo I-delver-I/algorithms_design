@@ -7,11 +7,13 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        int initialVerticesCount = 50;
+        int defaultAntsCount = 35;
+        int eliteAntsCount = 10;
+        int initialVerticesCount = DataCapturer.CaptureInitialVerticesCount(defaultAntsCount + eliteAntsCount);
 
         var graph = new GraphOfSites(initialVerticesCount);
         var edgeSelector = new EdgeSelector(graph);
-        var antSpawner = new AntSpawner(graph);
+        var antSpawner = new AntSpawner(graph, defaultAntsCount, eliteAntsCount);
         var antMover = new AntMover(edgeSelector, graph);
         var solver = new AntProblemSolver(graph, edgeSelector, antSpawner, antMover);
 
@@ -31,7 +33,7 @@ public class Program
         var timer = new Stopwatch();
         timer.Start();
         System.Console.WriteLine("Please, wait. Solving traveling salesman problem...");
-        var shortestGraphBypass = solver.Solve(100);
+        var shortestGraphBypass = solver.Solve();
         timer.Stop();
         System.Console.WriteLine($"Solving took {timer.Elapsed} time");
         System.Console.WriteLine($"The shortest path length: {shortestGraphBypass.Sum(e => e.Length)}");

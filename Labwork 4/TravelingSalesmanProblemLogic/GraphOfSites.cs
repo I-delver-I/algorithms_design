@@ -14,7 +14,11 @@ namespace TravelingSalesmanProblemLogic
 
         public GraphOfSites(int initialVerticesCount)
         {
-            AddVertices(initialVerticesCount);
+            for (var i = 0; i < initialVerticesCount; i++)
+            {
+                AddVertex();
+            }
+
             CreateEdgesBetweenAllVertices();     
         }
 
@@ -31,13 +35,13 @@ namespace TravelingSalesmanProblemLogic
             }
         }
 
-        private int GetAdjustedPheromonSum(int minimalSolutionPrice, AntGraphEdge edge)
+        private double GetAdjustedPheromonSum(int minimalSolutionPrice, AntGraphEdge edge)
         {
-            var result = 0;
+            double result = 0;
 
             foreach (Ant ant in edge)
             {
-                result += minimalSolutionPrice
+                result += (double)minimalSolutionPrice
                     / GetEdgesWhichConnectVertices(ant.GetVerticesNumbers().ToArray())
                     .Sum(e => e.Length);
             }
@@ -66,14 +70,6 @@ namespace TravelingSalesmanProblemLogic
             }
 
             return result;
-        }
-
-        public void AddVertices(int verticesCount)
-        {
-            for (var i = 0; i < verticesCount; i++)
-            {
-                AddVertex();
-            }
         }
 
         public void AddVertex()

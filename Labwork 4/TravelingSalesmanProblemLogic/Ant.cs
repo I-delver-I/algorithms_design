@@ -26,7 +26,7 @@ namespace TravelingSalesmanProblemLogic
 
         public List<int> GetVerticesNumbers()
         {
-            return _visitedVerticesNumbers;
+            return ((int[])_visitedVerticesNumbers.ToArray().Clone()).ToList();
         }
 
         /// <exception cref="ArgumentException"></exception>

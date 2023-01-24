@@ -24,7 +24,7 @@ namespace TravelingSalesmanProblemLogic
 
             foreach (Ant ant in _ants)
             {
-                result.Add(((int[])ant.GetVerticesNumbers().ToArray().Clone()).ToList());
+                result.Add(ant.GetVerticesNumbers());
             }
 
             return result;

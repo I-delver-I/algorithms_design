@@ -33,6 +33,8 @@ namespace TravelingSalesmanProblemLogic
 
             List<AntGraphEdge> shortestGraphBypass = null;
             FileHandler.WriteLine(DateTime.Now.ToString());
+            FileHandler.WriteLine($"Default ants count: {_antSpawner.DefaultAntsCount}, "
+                + $"elite ants count: {_antSpawner.EliteAntsCount}, iterations count: {iterationsCount}");
 
             for (var i = 0; i < iterationsCount; i++)
             {
@@ -103,7 +105,7 @@ namespace TravelingSalesmanProblemLogic
         {
             foreach (Ant ant in _antSpawner)
             {
-                for (var j = 0; j < _graph.GetVerticesCount(); j++)
+                for (var j = 0; j < _graph.GetVerticesCount() - 1; j++)
                 {
                     _antMover.MoveAntToNextVertex(ant);
                 }
