@@ -10,7 +10,7 @@ namespace TravelingSalesmanProblemRunner
             do
             {
                 verticesAreCaptured = true;
-                System.Console.Write("Enter the initial count of vertices (default 200): ");
+                System.Console.Write("Enter the initial count of vertices (required 200): ");
 
                 try
                 {
@@ -45,7 +45,7 @@ namespace TravelingSalesmanProblemRunner
             do
             {
                 iterationsAreCaptured = true;
-                System.Console.Write("Enter the count of iterations (default 1000): ");
+                System.Console.Write("Enter the count of iterations (required 1000): ");
 
                 try
                 {

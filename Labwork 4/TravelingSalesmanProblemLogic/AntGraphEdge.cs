@@ -32,11 +32,6 @@ namespace TravelingSalesmanProblemLogic
             Length = random.Next(smallestLength, longestLength + 1);
         }
 
-        public int GetPassedAntsCount()
-        {
-            return _antsPassedDuringIteration.Count;
-        }
-
         public void RemovePassedAnts()
         {
             _antsPassedDuringIteration.Clear();

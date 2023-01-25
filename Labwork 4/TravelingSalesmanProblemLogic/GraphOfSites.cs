@@ -28,11 +28,8 @@ namespace TravelingSalesmanProblemLogic
             var adjustedPheromonSum = 
                 GetAdjustedPheromonSum(minimalSolutionPrice, edgeToUpdatePheromoneLevelOn);
 
-            for (int i = 0; i < edgeToUpdatePheromoneLevelOn.GetPassedAntsCount(); i++)
-            {
-                edgeToUpdatePheromoneLevelOn.PheromonLevel = (1 - PheromonEvaporationRate) 
-                    * edgeToUpdatePheromoneLevelOn.PheromonLevel + adjustedPheromonSum;
-            }
+            edgeToUpdatePheromoneLevelOn.PheromonLevel = (1 - PheromonEvaporationRate) 
+                        * edgeToUpdatePheromoneLevelOn.PheromonLevel + adjustedPheromonSum;
         }
 
         private double GetAdjustedPheromonSum(int minimalSolutionPrice, AntGraphEdge edge)

@@ -6,6 +6,7 @@ namespace TravelingSalesmanProblemLogic
         private EdgeSelector _edgeSelector;
         private AntSpawner _antSpawner;
         private AntMover _antMover;
+        private List<List<AntGraphEdge>> _graphBypassesHistory = new List<List<AntGraphEdge>>();
 
         public int MinimalSolutionPrice { get; set; }
 
@@ -40,7 +41,8 @@ namespace TravelingSalesmanProblemLogic
             for (var i = 0; i < iterationsCount; i++)
             {
                 MoveAntsThroughWholeGraph();
-                shortestGraphBypass = GetShortestGraphBypass(shortestGraphBypass);
+                shortestGraphBypass = GetShortestGraphBypass();
+                _graphBypassesHistory.Add(shortestGraphBypass);
 
                 foreach (AntGraphEdge edge in _graph)
                 {
@@ -67,22 +69,14 @@ namespace TravelingSalesmanProblemLogic
 
             FileHandler.WriteLine("");
 
-            return shortestGraphBypass;
+            return _graphBypassesHistory
+                .Find(bypass => bypass.Sum(e => e.Length) == _graphBypassesHistory.Min(b => b.Sum(e => e.Length)));
         }
 
-        private List<AntGraphEdge> GetShortestGraphBypass(List<AntGraphEdge> lastGraphBypass)
+        private List<AntGraphEdge> GetShortestGraphBypass()
         {
-            var result = lastGraphBypass;
-            int minimalPathLength;
-
-            if (lastGraphBypass is null)
-            {
-                minimalPathLength = int.MaxValue;
-            }
-            else
-            {
-                minimalPathLength = lastGraphBypass.Sum(e => e.Length);
-            }
+            List<AntGraphEdge> result = null;
+            int minimalPathLength = int.MaxValue;
 
             var antsVisitedVerticesNumbers = _antSpawner.GetAntsVisitedVerticesNumbers();
 
