@@ -1,5 +1,3 @@
-
-
 namespace TravelingSalesmanProblemLogic
 {
     public static class FileHandler
