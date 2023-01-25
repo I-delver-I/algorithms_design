@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortestPathProblemRunner", "ShortestPathProblemRunner\ShortestPathProblemRunner.csproj", "{DF804C64-DDC5-45C3-8653-0F4862708B02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShortestPathProblemLogic", "ShortestPathProblemLogic\ShortestPathProblemLogic.csproj", "{D8826C84-F24C-46F9-9204-094A4F923DB6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF804C64-DDC5-45C3-8653-0F4862708B02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF804C64-DDC5-45C3-8653-0F4862708B02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF804C64-DDC5-45C3-8653-0F4862708B02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF804C64-DDC5-45C3-8653-0F4862708B02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8826C84-F24C-46F9-9204-094A4F923DB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8826C84-F24C-46F9-9204-094A4F923DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8826C84-F24C-46F9-9204-094A4F923DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8826C84-F24C-46F9-9204-094A4F923DB6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
