@@ -20,6 +20,23 @@ namespace ShortestPathProblemLogic
             GenerateEdgesCovering();
         }
 
+        public List<GraphEdge> GetEdgesWithSpecifiedVertex(int vertexNumber)
+        {
+            return _edges.FindAll(e => (e.FirstVertex.Number == vertexNumber) 
+                || (e.SecondVertex.Number == vertexNumber)).ToList();
+        }
+
+        public List<GraphEdge> GetEdgesWithSpecifiedVertexExcept(int vertexNumber, 
+            int[] exceptionalVerticesNumbers)
+        {
+            return GetEdgesWithSpecifiedVertex(vertexNumber).Except
+                (GetEdgesWithSpecifiedVertex(vertexNumber)
+                .Where(e => ((e.FirstVertex.Number == vertexNumber) 
+                    && (exceptionalVerticesNumbers.Contains(e.SecondVertex.Number)))
+                    || ((e.SecondVertex.Number == vertexNumber) 
+                    && (exceptionalVerticesNumbers.Contains(e.FirstVertex.Number))))).ToList();
+        }
+
         /// <exception cref="InvalidOperationException"></exception>
         private void GenerateEdgesCovering()
         {
@@ -36,13 +53,12 @@ namespace ShortestPathProblemLogic
                 int randomNeighboursCount = random
                     .Next(0, GraphValidator.MaximalVertexDegree - firstVertex.Degree + 1);
 
-                var otherVertices = _vertices.Where(vertex => vertex != firstVertex).ToList();
+                var otherVertices = _vertices.Where(vertex => vertex.Number != firstVertex.Number).ToList();
 
                 for (var i = 0; (i < randomNeighboursCount) && (i < GetVerticesCount() - 1); i++)
                 {
                     var secondVertex = otherVertices
-                        .Find(v => (v.Degree != GraphValidator.MaximalVertexDegree) 
-                        && (v.Degree == otherVertices.Min(v => v.Degree)));
+                        .Find(v => (v.Degree != GraphValidator.MaximalVertexDegree));
 
                     if (secondVertex is null)
                     {
