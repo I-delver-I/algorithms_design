@@ -2,9 +2,14 @@ using System.Text;
 
 namespace ShortestPathProblemLogic
 {
-    public class Chromosome
+    public class Chromosome : ICloneable
     {
         private List<int> _ownedVerticesNumbers = new List<int>();
+
+        public void ReplaceVertexNumber(int index, int numberToReplaceBy)
+        {
+            _ownedVerticesNumbers[index] = numberToReplaceBy;
+        }
 
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void InsertVertexNumberAt(int index, int vertexNumber, GraphOfSites graph)
@@ -81,6 +86,15 @@ namespace ShortestPathProblemLogic
             _ownedVerticesNumbers.ForEach(n => builder.Append($" {n} "));
 
             return builder.ToString();
+        }
+
+        public object Clone()
+        {
+            var result = new Chromosome();
+
+            result.AddVerticesNumbersRange(GetVerticesNumbers());
+
+            return result;
         }
     }
 }

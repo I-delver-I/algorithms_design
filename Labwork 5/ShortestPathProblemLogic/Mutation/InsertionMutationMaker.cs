@@ -9,11 +9,11 @@ namespace ShortestPathProblemLogic.Mutation
             _graph = graph;
         }
 
-        public void MakeMutation(Chromosome offspring)
+        public void MakeMutation(Chromosome offspringToMutate)
         {
             int indexToInsertVertexNumberAt;
             int numberToInsert = 0;
-            var verticesNumbers = offspring.GetVerticesNumbers();
+            var verticesNumbers = offspringToMutate.GetVerticesNumbers();
             var triedIndices = new List<int>();
 
             do
@@ -42,7 +42,7 @@ namespace ShortestPathProblemLogic.Mutation
 
             if (numberToInsert != 0)
             {
-                offspring.InsertVertexNumberAt(indexToInsertVertexNumberAt, numberToInsert, _graph);
+                offspringToMutate.InsertVertexNumberAt(indexToInsertVertexNumberAt, numberToInsert, _graph);
             }
         }
     }

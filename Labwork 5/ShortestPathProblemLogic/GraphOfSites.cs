@@ -46,7 +46,7 @@ namespace ShortestPathProblemLogic
         }
 
         public List<GraphEdge> GetEdgesWithSpecifiedVertexExcept(int vertexNumber, 
-            int[] exceptionalVerticesNumbers)
+            List<int> exceptionalVerticesNumbers)
         {
             return GetEdgesWithSpecifiedVertex(vertexNumber).Except
                 (GetEdgesWithSpecifiedVertex(vertexNumber)
@@ -72,22 +72,20 @@ namespace ShortestPathProblemLogic
                 int randomNeighboursCount = random
                     .Next(0, GraphValidator.MaximalVertexDegree - firstVertex.Degree + 1);
 
-                var otherVertices = _vertices.Where(vertex => vertex.Number != firstVertex.Number).ToList();
+                var otherVertices = _vertices.Except(new List<GraphVertex>() { firstVertex })
+                    .Where(v => v.Degree != GraphValidator.MaximalVertexDegree).ToList();
 
                 for (var i = 0; (i < randomNeighboursCount) && (i < GetVerticesCount() - 1); i++)
                 {
-                    var secondVertex = otherVertices
-                        .Find(v => (v.Degree != GraphValidator.MaximalVertexDegree));
+                    GraphVertex secondVertex;
 
-                    if (secondVertex is null)
+                    do
                     {
-                        break;
-                    }
+                        var randomVerticeIndex = random.Next(otherVertices.Count);
+                        secondVertex = otherVertices[randomVerticeIndex];
+                    } while (EdgeExists(firstVertex.Number, secondVertex.Number));
 
-                    if (!EdgeExists(firstVertex.Number, secondVertex.Number))
-                    {
-                        AddEdge(firstVertex.Number, secondVertex.Number);
-                    }
+                    AddEdge(firstVertex.Number, secondVertex.Number);
                 }
             }
         }

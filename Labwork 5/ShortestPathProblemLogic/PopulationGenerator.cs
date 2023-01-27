@@ -11,15 +11,47 @@ namespace ShortestPathProblemLogic
         
         public int EndVertexNumber { get; }
 
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public PopulationGenerator
             (GraphOfSites graph, int startVertexNumber, int endVertexNumber)
         {
             _graph = graph;
+
+            if ((startVertexNumber < 1) || (startVertexNumber >= endVertexNumber))
+            {
+                throw new ArgumentOutOfRangeException(nameof(startVertexNumber));
+            }
+
+            if (endVertexNumber > graph.GetVerticesCount())
+            {
+                throw new ArgumentOutOfRangeException(nameof(endVertexNumber));
+            }
+
             StartVertexNumber = startVertexNumber;
             EndVertexNumber = endVertexNumber;
         } 
+
+        public void AddChromosome(Chromosome chromosome)
+        {
+            _chromosomes.Add(chromosome);
+        }
+
+        public void RemoveChromosome(Chromosome chromosome)
+        {
+            if (chromosome is null)
+            {
+                throw new ArgumentNullException(nameof(chromosome));
+            }
+
+            if (ContainsChromosome(chromosome.GetVerticesNumbers()))
+            {
+                
+            }
+
+            _chromosomes.Remove(chromosome);
+        }
         
-        public bool ContainsChromosome(int[] verticesNumbers)
+        public bool ContainsChromosome(List<int> verticesNumbers)
         {
             return _chromosomes
                 .Exists(c => Enumerable.SequenceEqual(c.GetVerticesNumbers(), verticesNumbers));
@@ -29,11 +61,11 @@ namespace ShortestPathProblemLogic
         {
             for (var i = 0; i < chromosomesCount; i++)
             {
-                AddChromosome();
+                CreateChromosome();
             }
         }
 
-        public void AddChromosome()
+        public void CreateChromosome()
         {
             var chromosomeToAdd = new Chromosome();
             chromosomeToAdd.AddVertexNumber(StartVertexNumber);
@@ -42,7 +74,7 @@ namespace ShortestPathProblemLogic
             {
                 var allowedEdges = _graph
                     .GetEdgesWithSpecifiedVertexExcept(chromosomeToAdd.LastVertexNumber(), 
-                    chromosomeToAdd.GetVerticesNumbers().ToArray());
+                    chromosomeToAdd.GetVerticesNumbers());
 
                 if (allowedEdges.Count == 0)
                 {
@@ -59,7 +91,7 @@ namespace ShortestPathProblemLogic
 
                 chromosomeToAdd.AddVertexNumber(vertexNumberToAdd);
 
-                if (ContainsChromosome(chromosomeToAdd.GetVerticesNumbers().ToArray()))
+                if (ContainsChromosome(chromosomeToAdd.GetVerticesNumbers()))
                 {
                     chromosomeToAdd.RemoveVerticesNumbersExceptStart();
                 }

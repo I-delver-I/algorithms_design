@@ -1,5 +1,6 @@
 using ShortestPathProblemLogic.Crossover;
 using ShortestPathProblemLogic.Mutation;
+using ShortestPathProblemLogic.LocalImprovement;
 
 namespace ShortestPathProblemLogic
 {
@@ -12,25 +13,48 @@ namespace ShortestPathProblemLogic
 
         public IMutationMakable MutationMaker { get; set; }
 
+        public ILocalImprovable LocalImprover { get; set; }
+
         public GeneticProblemSolver(GraphOfSites graph, PopulationGenerator populationGenerator,
-            ICrossoverable crossover, IMutationMakable mutationMaker)
+            ICrossoverable crossover, IMutationMakable mutationMaker, ILocalImprovable localImprover)
         {
             _graph = graph;
             _populationGenerator = populationGenerator;
             Crossover = crossover;
             MutationMaker = mutationMaker;
+            LocalImprover = localImprover;
         }
 
-        public List<GraphEdge> Solve(int chromosomesCount, int iterationsCount = 1000)
+        public List<GraphEdge> Solve(int chromosomesCount, int iterationsCount)
         {
-            List<GraphEdge> shortestPath = null;
-
             _populationGenerator.GenerateChromosomes(chromosomesCount);
-            var maximalMutationProbabilityLevel = 1;
+            var maximalMutationProbabilityLevel = 0.33;
+
+            FileHandler.WriteLineToFile(DateTime.Now.ToString());
 
             for (var i = 0; i < iterationsCount; i++)
             {
+                if ((i + 1) % 10 == 0)
+                {
+                    foreach (Chromosome chromosome in _populationGenerator)
+                    {
+                        FileHandler.WriteLineToFile($"{chromosome}\n");
+                    }
+
+                    FileHandler.WriteLineToFile($"The shortest path: {GetShortestPathLength()}\n");
+
+                    foreach (GraphEdge edge in GetShortestPath())
+                    {
+                        FileHandler.WriteLineToFile($" {edge} |");
+                    }
+                }
+
                 var offspring = Crossover.MakeCrossover();
+
+                if (offspring is null)
+                {
+                    continue;
+                }
 
                 var random = new Random();
                 var mutationProbability = random.NextDouble();
@@ -40,23 +64,29 @@ namespace ShortestPathProblemLogic
                     MutationMaker.MakeMutation(offspring);
                 }
 
-                
+                LocalImprover.MakeImprovement(offspring);
+
+                _populationGenerator.AddChromosome(offspring);
+                _populationGenerator.RemoveChromosome(GetLongestChromosome());
             }
 
-            return shortestPath;
+            return GetShortestPath();
+        }
+
+        public Chromosome GetLongestChromosome()
+        {
+            return _populationGenerator.MaxBy(c => c.GetLength(_graph));
         }
 
         public int GetShortestPathLength()
         {
-            return _populationGenerator.Min(c => _graph
-                .GetEdgesWhichConnectVertices(c.GetVerticesNumbers()).Sum(e => e.Length));
+            return _populationGenerator.Min(c => c.GetLength(_graph));
         }
 
-        public Chromosome GetShortestPath()
+        public List<GraphEdge> GetShortestPath()
         {
-            return _populationGenerator.First(c => _graph
-                .GetEdgesWhichConnectVertices(c.GetVerticesNumbers())
-                .Sum(e => e.Length) == GetShortestPathLength());
+            return _graph.GetEdgesWhichConnectVertices(_populationGenerator
+                .MinBy(c => c.GetLength(_graph)).GetVerticesNumbers());
         }
     }
 }

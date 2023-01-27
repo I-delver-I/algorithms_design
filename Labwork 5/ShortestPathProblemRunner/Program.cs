@@ -1,6 +1,7 @@
 ﻿using ShortestPathProblemLogic;
 using ShortestPathProblemLogic.Crossover;
 using ShortestPathProblemLogic.Mutation;
+using ShortestPathProblemLogic.LocalImprovement;
 
 namespace ShortestPathProblemRunner
 {
@@ -8,28 +9,27 @@ namespace ShortestPathProblemRunner
     {
         public static void Main(string[] args)
         {
-            int iterationsCount = 1000;
-            int initialVerticesCount = 10;
-            int startVertexNumber = 1;
-            int endVertexNumber = 10;
-            int chromosomesCount = 6;
+            FileHandler.ClearFile();
 
-            var graph = new GraphOfSites(initialVerticesCount);
-            var populationGenerator = new PopulationGenerator
-                (graph, startVertexNumber, endVertexNumber);
-            var crossover = new SinglePointCrossover(populationGenerator, graph);
+            var graph = DataCatcher.CatchGraph();
+            var populationGenerator = DataCatcher.CatchPopulationGenerator(graph);
             var mutationMaker = new InsertionMutationMaker(graph);
-            var solver = new GeneticProblemSolver(graph, populationGenerator, crossover, mutationMaker);
+            var localImprover = new ProfitableVertexReplacementLocalImprover(graph);
+            var crossover = new SinglePointCrossover(populationGenerator, graph);
+            var solver = new GeneticProblemSolver
+                (graph, populationGenerator, crossover, mutationMaker, localImprover);
 
-            System.Console.WriteLine("Graph:");
-            System.Console.WriteLine(graph);
+            int chromosomesCount = DataCatcher.CatchChromosomesCount(graph);
+            int iterationsCount = DataCatcher.CatchIterationsCount();
 
+            System.Console.WriteLine("Please, wait. Solving the shortest path problem...");
             var shortestPath = solver.Solve(chromosomesCount, iterationsCount);
 
-            System.Console.WriteLine("\nChromosomes:");
-            foreach (Chromosome chromosome in populationGenerator)
+            System.Console.WriteLine($"\nShortest path: {shortestPath.Sum(e => e.Length)}");
+
+            foreach (GraphEdge edge in shortestPath)
             {
-                System.Console.WriteLine(chromosome);
+                System.Console.WriteLine($" {edge} |");
             }
         }
     }
