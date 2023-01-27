@@ -6,6 +6,17 @@ namespace ShortestPathProblemLogic
     {
         private List<int> _ownedVerticesNumbers = new List<int>();
 
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void InsertVertexNumberAt(int index, int vertexNumber, GraphOfSites graph)
+        {
+            if (!graph.ContainsVertexNumber(vertexNumber))
+            {
+                throw new ArgumentOutOfRangeException(nameof(vertexNumber));
+            }
+
+            _ownedVerticesNumbers.Insert(index, vertexNumber);
+        }
+
         public List<int> GetOwnedVerticesExceptEnds()
         {
             return _ownedVerticesNumbers

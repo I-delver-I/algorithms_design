@@ -1,5 +1,6 @@
 ﻿using ShortestPathProblemLogic;
 using ShortestPathProblemLogic.Crossover;
+using ShortestPathProblemLogic.Mutation;
 
 namespace ShortestPathProblemRunner
 {
@@ -8,21 +9,22 @@ namespace ShortestPathProblemRunner
         public static void Main(string[] args)
         {
             int iterationsCount = 1000;
-            int initialVerticesCount = 5;
+            int initialVerticesCount = 10;
             int startVertexNumber = 1;
-            int endVertexNumber = 5;
-            int chromosomesCount = 3;
+            int endVertexNumber = 10;
+            int chromosomesCount = 6;
 
             var graph = new GraphOfSites(initialVerticesCount);
             var populationGenerator = new PopulationGenerator
                 (graph, startVertexNumber, endVertexNumber);
             var crossover = new SinglePointCrossover(populationGenerator, graph);
-            var solver = new GeneticProblemSolver(graph, populationGenerator, crossover);
-
-            var shortestPath = solver.Solve(chromosomesCount, iterationsCount);
+            var mutationMaker = new InsertionMutationMaker(graph);
+            var solver = new GeneticProblemSolver(graph, populationGenerator, crossover, mutationMaker);
 
             System.Console.WriteLine("Graph:");
             System.Console.WriteLine(graph);
+
+            var shortestPath = solver.Solve(chromosomesCount, iterationsCount);
 
             System.Console.WriteLine("\nChromosomes:");
             foreach (Chromosome chromosome in populationGenerator)

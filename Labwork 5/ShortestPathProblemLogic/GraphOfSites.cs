@@ -20,6 +20,13 @@ namespace ShortestPathProblemLogic
             GenerateEdgesCovering();
         }
 
+        public List<int> GetOtherVerticesOfEdgesWithSpecifiedVertexNumber(int vertexNumber)
+        {
+            return GetEdgesWithSpecifiedVertex(vertexNumber)
+                .Select(e => (e.FirstVertex.Number == vertexNumber) 
+                ? e.SecondVertex.Number : e.FirstVertex.Number).ToList();
+        }
+
         public List<GraphEdge> GetEdgesWhichConnectVertices(List<int> verticesNumbers)
         {
             var result = new List<GraphEdge>();
@@ -149,9 +156,9 @@ namespace ShortestPathProblemLogic
             _vertices.Add(new GraphVertex(_nextVertexNumber++));
         }
 
-        public bool ContainsVertex(GraphVertex vertex)
+        public bool ContainsVertexNumber(int vertexNumber)
         {
-            return _vertices.Contains(vertex);
+            return _vertices.Exists(v => v.Number == vertexNumber);
         }
 
         public override string ToString()

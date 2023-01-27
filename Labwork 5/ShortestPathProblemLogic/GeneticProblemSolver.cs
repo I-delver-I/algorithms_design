@@ -1,4 +1,5 @@
 using ShortestPathProblemLogic.Crossover;
+using ShortestPathProblemLogic.Mutation;
 
 namespace ShortestPathProblemLogic
 {
@@ -9,12 +10,15 @@ namespace ShortestPathProblemLogic
 
         public ICrossoverable Crossover { get; set; }
 
+        public IMutationMakable MutationMaker { get; set; }
+
         public GeneticProblemSolver(GraphOfSites graph, PopulationGenerator populationGenerator,
-            ICrossoverable crossover)
+            ICrossoverable crossover, IMutationMakable mutationMaker)
         {
             _graph = graph;
             _populationGenerator = populationGenerator;
             Crossover = crossover;
+            MutationMaker = mutationMaker;
         }
 
         public List<GraphEdge> Solve(int chromosomesCount, int iterationsCount = 1000)
@@ -22,8 +26,7 @@ namespace ShortestPathProblemLogic
             List<GraphEdge> shortestPath = null;
 
             _populationGenerator.GenerateChromosomes(chromosomesCount);
-            var shortestPathLength = GetShortestPathLength();
-            var maximalMutationProbabilityLevel = 0.2;
+            var maximalMutationProbabilityLevel = 1;
 
             for (var i = 0; i < iterationsCount; i++)
             {
@@ -34,8 +37,10 @@ namespace ShortestPathProblemLogic
 
                 if (mutationProbability <= maximalMutationProbabilityLevel)
                 {
-                    
+                    MutationMaker.MakeMutation(offspring);
                 }
+
+                
             }
 
             return shortestPath;
