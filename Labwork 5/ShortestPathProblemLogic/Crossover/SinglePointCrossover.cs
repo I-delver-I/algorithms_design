@@ -11,25 +11,15 @@ namespace ShortestPathProblemLogic.Crossover
             _graph = graph;
         }
 
-        public int FindCommonVertexNumber(Chromosome firstParent, Chromosome secondParent)
+        private int FindCommonVertexNumber(Chromosome firstParent, Chromosome secondParent)
         {
-            var firstParentVerticesToCompare = firstParent.GetOwnedVerticesExceptEnds();
-            var secondParentVerticesToCompare = secondParent.GetOwnedVerticesExceptEnds();
+            var firstParentVerticesToCompare = firstParent.GetVerticesNumbersExceptEnds();
+            var secondParentVerticesToCompare = secondParent.GetVerticesNumbersExceptEnds();
 
             return firstParentVerticesToCompare.Intersect(secondParentVerticesToCompare).FirstOrDefault();
         }
 
-        public Chromosome GetCrossoverableParentWithShortestPath()
-        {
-            var populationExceptChromosomeWithTwoVertices = _populationGenerator
-                .Where(c => c.GetVerticesNumbers().Count 
-                > GraphValidator.MinimalVerticesCountDividedByPointCrossover * 2).ToList();
-
-            return populationExceptChromosomeWithTwoVertices
-                .MinBy(c => c.GetLength(_graph));
-        }
-
-        public Chromosome GetCrossoverableRandomParent(Chromosome anotherParent)
+        private Chromosome GetCrossoverableRandomParent(Chromosome anotherParent)
         {
             Chromosome result = null;
             var chromosomesExceptFirstParent = _populationGenerator
@@ -46,7 +36,7 @@ namespace ShortestPathProblemLogic.Crossover
         {
             var result = new Chromosome();
 
-            var firstParent = GetCrossoverableRandomParent(null); // GetCrossoverableParentWithShortestPath();
+            var firstParent = GetCrossoverableRandomParent(null);
             var secondParent = GetCrossoverableRandomParent(firstParent);
             var commonParentsVertexNumber = FindCommonVertexNumber(firstParent, secondParent);
 

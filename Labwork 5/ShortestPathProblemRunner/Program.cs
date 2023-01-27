@@ -11,26 +11,36 @@ namespace ShortestPathProblemRunner
         {
             FileHandler.ClearFile();
 
-            var graph = DataCatcher.CatchGraph();
-            var populationGenerator = DataCatcher.CatchPopulationGenerator(graph);
-            var mutationMaker = new InsertionMutationMaker(graph);
-            var localImprover = new ProfitableVertexReplacementLocalImprover(graph);
-            var crossover = new SinglePointCrossover(populationGenerator, graph);
-            var solver = new GeneticProblemSolver
-                (graph, populationGenerator, crossover, mutationMaker, localImprover);
+            System.Console.WriteLine("Operators of the first solving case:\n"
+                + " - single point crossover\n"
+                + " - insertion mutation\n"
+                + " - vertex replacement local improvement\n");
 
-            int chromosomesCount = DataCatcher.CatchChromosomesCount(graph);
-            int iterationsCount = DataCatcher.CatchIterationsCount();
+            var firstCaseGraph = DataCatcher.CatchGraph();
+            var firstCasePopulationGenerator = DataCatcher.CatchPopulationGenerator(firstCaseGraph);
+            ICrossoverable firstCaseCrossover = 
+                new SinglePointCrossover(firstCasePopulationGenerator, firstCaseGraph);
 
-            System.Console.WriteLine("Please, wait. Solving the shortest path problem...");
-            var shortestPath = solver.Solve(chromosomesCount, iterationsCount);
+            SolvingCases.UseSolvingCase(firstCaseGraph, firstCasePopulationGenerator, firstCaseCrossover);
 
-            System.Console.WriteLine($"\nShortest path: {shortestPath.Sum(e => e.Length)}");
+            PrintHyphenLine();
+            FileHandler.WriteLineToFile($"{new string('-', 80)}\n");
 
-            foreach (GraphEdge edge in shortestPath)
-            {
-                System.Console.WriteLine($" {edge} |");
-            }
+            System.Console.WriteLine("Operators of the second solving case:\n"
+                + " - uniform crossover\n"
+                + " - insertion mutation\n"
+                + " - vertex replacement local improvement\n");
+
+            var secondCaseGraph = DataCatcher.CatchGraph();
+            var secondCasePopulationGenerator = DataCatcher.CatchPopulationGenerator(secondCaseGraph);
+            var secondCaseCrossover = new UniformCrossover(secondCasePopulationGenerator, secondCaseGraph);
+
+            SolvingCases.UseSolvingCase(secondCaseGraph, secondCasePopulationGenerator, secondCaseCrossover);
+        }
+
+        public static void PrintHyphenLine()
+        {
+            System.Console.WriteLine(new string('-', 70));
         }
     }
 }

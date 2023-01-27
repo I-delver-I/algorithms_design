@@ -4,7 +4,7 @@ namespace ShortestPathProblemRunner
 {
     public static class DataCatcher
     {
-        public static int CatchChromosomesCount(GraphOfSites graph)
+        public static int CatchChromosomesCount()
         {
             int result = 0;
             var exceptionIsCaught = false;

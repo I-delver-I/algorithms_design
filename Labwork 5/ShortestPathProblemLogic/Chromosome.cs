@@ -22,7 +22,7 @@ namespace ShortestPathProblemLogic
             _ownedVerticesNumbers.Insert(index, vertexNumber);
         }
 
-        public List<int> GetOwnedVerticesExceptEnds()
+        public List<int> GetVerticesNumbersExceptEnds()
         {
             return _ownedVerticesNumbers
                 .Except(new List<int> { _ownedVerticesNumbers.First(), _ownedVerticesNumbers.Last() }).ToList();
