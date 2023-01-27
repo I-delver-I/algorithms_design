@@ -11,5 +11,7 @@ namespace ShortestPathProblemLogic
         public static int MaximalEdgeLength { get; } = 150;
 
         public static int MinimalVerticesCount { get; } = 2;
+
+        public static int MinimalVerticesCountDividedByPointCrossover { get; } = 1;
     }
 }

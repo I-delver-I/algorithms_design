@@ -20,6 +20,18 @@ namespace ShortestPathProblemLogic
             GenerateEdgesCovering();
         }
 
+        public List<GraphEdge> GetEdgesWhichConnectVertices(List<int> verticesNumbers)
+        {
+            var result = new List<GraphEdge>();
+
+            for (var i = 0; i < verticesNumbers.Count - 1; i++)
+            {
+                result.Add(FindEdgeByEndsNumbers(verticesNumbers[i], verticesNumbers[i + 1]));
+            }
+
+            return result;
+        }
+
         public List<GraphEdge> GetEdgesWithSpecifiedVertex(int vertexNumber)
         {
             return _edges.FindAll(e => (e.FirstVertex.Number == vertexNumber) 

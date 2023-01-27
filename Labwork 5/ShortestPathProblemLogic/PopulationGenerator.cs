@@ -18,7 +18,7 @@ namespace ShortestPathProblemLogic
             StartVertexNumber = startVertexNumber;
             EndVertexNumber = endVertexNumber;
         } 
-
+        
         public bool ContainsChromosome(int[] verticesNumbers)
         {
             return _chromosomes
