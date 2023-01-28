@@ -2,9 +2,9 @@ namespace ShortestPathProblemLogic
 {
     public class GraphEdge
     {
-        public GraphVertex FirstVertex { get; }
+        public GraphVertex FirstVertex { get; set; }
 
-        public GraphVertex SecondVertex { get; }
+        public GraphVertex SecondVertex { get; set; }
 
         public int Length { get; }
 

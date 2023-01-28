@@ -20,8 +20,10 @@ namespace ShortestPathProblemRunner
             var firstCasePopulationGenerator = DataCatcher.CatchPopulationGenerator(firstCaseGraph);
             ICrossoverable firstCaseCrossover = 
                 new SinglePointCrossover(firstCasePopulationGenerator, firstCaseGraph);
+            IMutationMakable mutationMaker = new InsertionMutationMaker(firstCaseGraph);
 
-            SolvingCases.UseSolvingCase(firstCaseGraph, firstCasePopulationGenerator, firstCaseCrossover);
+            SolvingCases.UseSolvingCase(firstCaseGraph, firstCasePopulationGenerator, firstCaseCrossover,
+                mutationMaker);
 
             PrintHyphenLine();
             FileHandler.WriteLineToFile($"{new string('-', 80)}\n");
@@ -33,9 +35,11 @@ namespace ShortestPathProblemRunner
 
             var secondCaseGraph = DataCatcher.CatchGraph();
             var secondCasePopulationGenerator = DataCatcher.CatchPopulationGenerator(secondCaseGraph);
-            var secondCaseCrossover = new UniformCrossover(secondCasePopulationGenerator, secondCaseGraph);
+            ICrossoverable secondCaseCrossover = new UniformCrossover(secondCasePopulationGenerator, secondCaseGraph);
+            IMutationMakable secondCaseMutationMaker = new InsertionMutationMaker(secondCaseGraph);
 
-            SolvingCases.UseSolvingCase(secondCaseGraph, secondCasePopulationGenerator, secondCaseCrossover);
+            SolvingCases.UseSolvingCase(secondCaseGraph, secondCasePopulationGenerator, secondCaseCrossover, 
+                secondCaseMutationMaker);
         }
 
         public static void PrintHyphenLine()

@@ -44,11 +44,13 @@ namespace ShortestPathProblemLogic.LocalImprovement
                     foreach (int vertexNumber in commonVerticesNumbers)
                     {
                         var offstringClone = (Chromosome)offspringToImprove.Clone();
+
                         offstringClone.ReplaceVertexNumber(indexOfVertexNumberToReplace, vertexNumber);
 
-                        if (offstringClone.GetLength(_graph) < currentPathLength)
+                        if ((offstringClone.GetLength(_graph) < currentPathLength))
                         {
-                            offspringToImprove.ReplaceVertexNumber(indexOfVertexNumberToReplace, vertexNumber);
+                            offspringToImprove.ReplaceVertexNumber(indexOfVertexNumberToReplace, 
+                                vertexNumber);
                             currentPathLength = offspringToImprove.GetLength(_graph);
                             replacementIsDone = true;
                         }

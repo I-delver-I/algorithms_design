@@ -12,8 +12,7 @@ namespace ShortestPathProblemLogic
         public int EndVertexNumber { get; }
 
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public PopulationGenerator
-            (GraphOfSites graph, int startVertexNumber, int endVertexNumber)
+        public PopulationGenerator(GraphOfSites graph, int startVertexNumber, int endVertexNumber)
         {
             _graph = graph;
 

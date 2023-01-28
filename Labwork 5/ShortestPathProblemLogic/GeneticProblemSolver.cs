@@ -28,7 +28,7 @@ namespace ShortestPathProblemLogic
         public List<GraphEdge> Solve(int chromosomesCount, int iterationsCount)
         {
             _populationGenerator.GenerateChromosomes(chromosomesCount);
-            var maximalMutationProbabilityLevel = 0.33;
+            var maximalMutationProbabilityLevel = 0.7;
 
             FileHandler.WriteLineToFile(DateTime.Now.ToString());
 

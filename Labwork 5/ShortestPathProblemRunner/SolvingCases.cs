@@ -8,9 +8,8 @@ namespace ShortestPathProblemRunner
     public static class SolvingCases
     {
         public static void UseSolvingCase(GraphOfSites graph, 
-            PopulationGenerator populationGenerator, ICrossoverable crossover)
+            PopulationGenerator populationGenerator, ICrossoverable crossover, IMutationMakable mutationMaker)
         {
-            IMutationMakable mutationMaker = new InsertionMutationMaker(graph);
             ILocalImprovable localImprover = new ProfitableVertexReplacementLocalImprover(graph);
             var solver = new GeneticProblemSolver
                 (graph, populationGenerator, crossover, mutationMaker, localImprover);

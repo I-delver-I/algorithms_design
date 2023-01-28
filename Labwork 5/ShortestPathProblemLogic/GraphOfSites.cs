@@ -20,6 +20,23 @@ namespace ShortestPathProblemLogic
             GenerateEdgesCovering();
         }
 
+        public GraphVertex GetVertexByNumber(int vertexNumber)
+        {
+            return _vertices.Find(v => v.Number == vertexNumber);
+        }
+
+        public void UpdateEdgeVertexNumber(GraphEdge edgeToUpdate, int numberToStay, int numberToAssign)
+        {
+            if (edgeToUpdate.FirstVertex.Number == numberToStay)
+            {
+                edgeToUpdate.SecondVertex = GetVertexByNumber(numberToAssign);
+            }
+            else
+            {
+                edgeToUpdate.FirstVertex = GetVertexByNumber(numberToAssign);
+            }
+        }
+
         public List<int> GetOtherVerticesOfEdgesWithSpecifiedVertexNumber(int vertexNumber)
         {
             return GetEdgesWithSpecifiedVertex(vertexNumber)
